@@ -10,7 +10,7 @@ clone from http://www.fit.vutbr.cz/~imikolov/rnnlm/
 
 # RNNLM
 
-RNNLM 主要有Tomas Mikolov 开发，最新版本0.4。Kaldi目前集成了0.3e版本。
+RNNLM 主要由Tomas Mikolov 开发(2010-2012)，目前版本0.4。Kaldi集成了0.3e版本。
 
 - [RNNLM Toolkit](https://github.com/mspandit/rnnlm)
 
