@@ -1,0 +1,236 @@
+How fast is a version, and how much memory does it need?
+
+Reference machine:
+ Intel(R) Core(TM)2 Duo CPU     E8400  @ 3.00GHz
+ Cache size 6144KB 
+
+
+0.1
+===
+
+Mem allocation during rescoring: 325MB
+
+time ./ex1.sh
+
+kombrink@pcspeech2: /mnt/matylda5/kombrink/exp/rt09_rnn/rnn_rescore_example$ time ./run.sh 
+convert the model
+benchmark your PC - that number is a rough estimate of how many words can be processed per second
+Benchmarked 20.093 sec -- avg. computeNet()/sec: 5574.08
+let's create a baseline from the n-best and the language model/acoustic scores
+score ngram
+N.B. numbers are much worse than with NIST scoring due to missing mappings, but RNN should improve anyways :)
+    ,-------------------------------------------------------------.
+    | HTK Results Analysis at Sat Apr  2 12:32:48 2011            |
+    | Ref: rt07seval.ref.mlf                                      |
+    | Rec: ngram.mlf                                              |
+    |=============================================================|
+    |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+    |-------------------------------------------------------------|
+    | Sum/Avg | 4527  |  77.74  15.24   7.03   2.80  25.07  72.30 |
+    `-------------------------------------------------------------'
+run rnn_rescoring
+
+real	15m48.654s
+user	15m47.345s
+sys	0m0.972s
+score rnn
+    ,-------------------------------------------------------------.
+    | HTK Results Analysis at Sat Apr  2 12:48:40 2011            |
+    | Ref: rt07seval.ref.mlf                                      |
+    | Rec: rnn.mlf                                                |
+    |=============================================================|
+    |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+    |-------------------------------------------------------------|
+    | Sum/Avg | 4527  |  77.29  15.79   6.91   2.89  25.60  73.38 |
+    `-------------------------------------------------------------'
+score rnn+ngram
+    ,-------------------------------------------------------------.
+    | HTK Results Analysis at Sat Apr  2 12:48:44 2011            |
+    | Ref: rt07seval.ref.mlf                                      |
+    | Rec: rnn+ngram.mlf                                          |
+    |=============================================================|
+    |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+    |-------------------------------------------------------------|
+    | Sum/Avg | 4527  |  77.90  15.17   6.93   2.72  24.82  72.26 |
+    `-------------------------------------------------------------'
+
+real	17m20.380s
+user	17m10.725s
+sys	0m6.054s
+
+------
+
+Mem allocation during rescoring: 339MB
+
+time ./ex2.sh
+
+kombrink@pcspeech2: /mnt/matylda5/kombrink/exp/rt09_rnn/rnn_rescore_example$ vim Benchmark 
+kombrink@pcspeech2: /mnt/matylda5/kombrink/exp/rt09_rnn/rnn_rescore_example$ time ./run2.sh
+this time an example where a wide range of interpolation values are used
+rescoring performance is NOT affected by that, because no log-linear interpolation is used!!
+convert the model
+benchmark your PC - that number is a rough estimate of how many words can be processed per second
+Benchmarked 20.067 sec -- avg. computeNet()/sec: 5581.3
+creating all scores...
+
+real	15m59.381s
+user	15m55.758s
+sys	0m1.633s
+extracting one-bests
+LIN INTERPOLATION
+lambda  |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+1.0     | Sum/Avg | 4527  |  77.53  15.67   6.81   2.95  25.43  73.16 |
+0.9     | Sum/Avg | 4527  |  77.92  15.26   6.83   2.86  24.94  72.65 |
+0.8     | Sum/Avg | 4527  |  77.99  15.16   6.86   2.83  24.85  72.41 |
+0.7     | Sum/Avg | 4527  |  78.01  15.13   6.86   2.82  24.81  72.32 |
+0.6     | Sum/Avg | 4527  |  78.02  15.10   6.88   2.79  24.77  72.37 |
+0.5     | Sum/Avg | 4527  |  78.06  15.06   6.89   2.80  24.75  72.23 |
+0.4     | Sum/Avg | 4527  |  78.03  15.10   6.87   2.77  24.74  72.28 |
+0.3     | Sum/Avg | 4527  |  77.98  15.12   6.90   2.78  24.79  72.17 |
+0.2     | Sum/Avg | 4527  |  77.97  15.12   6.90   2.79  24.82  72.12 |
+0.1     | Sum/Avg | 4527  |  77.92  15.16   6.93   2.79  24.88  72.12 |
+0.0     | Sum/Avg | 4527  |  77.74  15.24   7.03   2.80  25.07  72.30 |
+LIN INTERPOLATION OF LOG SCORES
+lambda  |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+1.0     | Sum/Avg | 4527  |  77.53  15.67   6.81   2.95  25.43  73.16 |
+0.9     | Sum/Avg | 4527  |  77.63  15.58   6.79   2.91  25.28  73.03 |
+0.8     | Sum/Avg | 4527  |  77.74  15.47   6.79   2.87  25.13  72.63 |
+0.7     | Sum/Avg | 4527  |  77.86  15.32   6.82   2.82  24.96  72.45 |
+0.6     | Sum/Avg | 4527  |  77.90  15.24   6.86   2.79  24.89  72.28 |
+0.5     | Sum/Avg | 4527  |  77.98  15.13   6.89   2.77  24.79  72.12 |
+0.4     | Sum/Avg | 4527  |  78.01  15.11   6.88   2.74  24.73  72.12 |
+0.3     | Sum/Avg | 4527  |  77.97  15.10   6.93   2.76  24.79  72.06 |
+0.2     | Sum/Avg | 4527  |  77.95  15.09   6.96   2.78  24.84  72.06 |
+0.1     | Sum/Avg | 4527  |  77.86  15.18   6.97   2.78  24.92  72.10 |
+0.0     | Sum/Avg | 4527  |  77.74  15.24   7.03   2.80  25.07  72.30 |
+
+real	18m27.790s
+user	18m16.725s
+sys	0m10.293s
+
+
+-------
+
+Mem allocation during rescoring: see run2.sh
+
+time ./ex3.sh
+
+this time an example of RNN adaptation (based on the output of example 2)
+we take the 1-best and adapt on it, and run a second RNN rescoring
+dump utterances per talk
+sort each talk by time
+adapt one model for each talk
+training model for talk CMU-0E07000...
+debug mode: 2
+train file: adapt/CMU-0E07000.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/CMU-0E07000-0.1.rnn
+Starting training using file adapt/CMU-0E07000.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.5581    Progress: 5K
+training model for talk CMU-0E07001...
+debug mode: 2
+train file: adapt/CMU-0E07001.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/CMU-0E07001-0.1.rnn
+Starting training using file adapt/CMU-0E07001.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.0995    Progress: 4K
+training model for talk EDI-1E07002...
+debug mode: 2
+train file: adapt/EDI-1E07002.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/EDI-1E07002-0.1.rnn
+Starting training using file adapt/EDI-1E07002.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.1719    Progress: 5K
+training model for talk EDI-1E07003...
+debug mode: 2
+train file: adapt/EDI-1E07003.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/EDI-1E07003-0.1.rnn
+Starting training using file adapt/EDI-1E07003.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.3448    Progress: 3K
+training model for talk NIS-2E07004...
+debug mode: 2
+train file: adapt/NIS-2E07004.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/NIS-2E07004-0.1.rnn
+Starting training using file adapt/NIS-2E07004.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.1291    Progress: 5K
+training model for talk NIS-2E07005...
+debug mode: 2
+train file: adapt/NIS-2E07005.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/NIS-2E07005-0.1.rnn
+Starting training using file adapt/NIS-2E07005.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.2252    Progress: 4K
+training model for talk VIT-3E07006...
+debug mode: 2
+train file: adapt/VIT-3E07006.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/VIT-3E07006-0.1.rnn
+Starting training using file adapt/VIT-3E07006.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 7.0297    Progress: 4K
+training model for talk VIT-3E07007...
+debug mode: 2
+train file: adapt/VIT-3E07007.txt.timesorted
+Training for one iteration
+Starting learning rate: 0.100000
+rnnlm file: adapt/VIT-3E07007-0.1.rnn
+Starting training using file adapt/VIT-3E07007.txt.timesorted
+Restoring network from file to continue training...
+Iter:  13	Alpha: 0.100000	   TRAIN entropy: 6.4512    Progress: 5K
+convert all models
+rescore using all rnns
+creating scores for talk CMU-0E07000
+creating scores for talk CMU-0E07001
+creating scores for talk EDI-1E07002
+creating scores for talk EDI-1E07003
+creating scores for talk NIS-2E07004
+creating scores for talk NIS-2E07005
+creating scores for talk VIT-3E07006
+creating scores for talk VIT-3E07007
+create mlfs / force-aligned mlfs /scoring
+scoring
+LIN INTERPOLATION
+lambda  |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+1.0     | Sum/Avg | 4527  |  78.20  15.02   6.78   2.82  24.62  72.01 |
+0.9     | Sum/Avg | 4527  |  78.23  14.98   6.79   2.79  24.56  71.97 |
+0.8     | Sum/Avg | 4527  |  78.22  14.99   6.79   2.80  24.58  71.97 |
+0.7     | Sum/Avg | 4527  |  78.23  14.99   6.78   2.80  24.57  71.90 |
+0.6     | Sum/Avg | 4527  |  78.22  14.99   6.79   2.80  24.58  71.81 |
+0.5     | Sum/Avg | 4527  |  78.24  14.96   6.80   2.79  24.56  71.84 |
+0.4     | Sum/Avg | 4527  |  78.22  14.98   6.81   2.80  24.58  71.77 |
+0.3     | Sum/Avg | 4527  |  78.20  14.97   6.83   2.80  24.60  71.92 |
+0.2     | Sum/Avg | 4527  |  78.13  15.01   6.86   2.80  24.67  71.97 |
+0.1     | Sum/Avg | 4527  |  78.05  15.06   6.89   2.81  24.75  72.01 |
+0.0     | Sum/Avg | 4527  |  77.74  15.24   7.03   2.80  25.07  72.30 |
+LIN INTERPOLATION OF LOG SCORES
+lambda  |           # Snt |  Corr    Sub    Del    Ins    Err  S. Err |
+1.0     | Sum/Avg | 4527  |  78.20  15.02   6.78   2.82  24.62  72.01 |
+0.9     | Sum/Avg | 4527  |  78.17  15.03   6.80   2.80  24.63  71.95 |
+0.8     | Sum/Avg | 4527  |  78.17  15.04   6.80   2.78  24.62  71.92 |
+0.7     | Sum/Avg | 4527  |  78.17  15.02   6.81   2.78  24.61  71.84 |
+0.6     | Sum/Avg | 4527  |  78.21  14.97   6.82   2.77  24.56  71.75 |
+0.5     | Sum/Avg | 4527  |  78.23  14.93   6.84   2.78  24.56  71.73 |
+0.4     | Sum/Avg | 4527  |  78.18  14.96   6.86   2.78  24.59  71.75 |
+0.3     | Sum/Avg | 4527  |  78.13  14.97   6.89   2.77  24.64  71.81 |
+0.2     | Sum/Avg | 4527  |  78.02  15.07   6.91   2.77  24.75  72.06 |
+0.1     | Sum/Avg | 4527  |  77.95  15.10   6.95   2.76  24.81  71.99 |
+0.0     | Sum/Avg | 4527  |  77.74  15.24   7.03   2.80  25.07  72.30 |
+
+real	36m4.502s
+user	32m15.985s
+sys	1m23.574s

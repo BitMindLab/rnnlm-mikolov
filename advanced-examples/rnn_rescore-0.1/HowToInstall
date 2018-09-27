@@ -1,0 +1,3 @@
+Requirements: Qt 4.6 or higher
+Recommended: g++-4.5, or upcoming g++-4.6
+To build run: qmake && make

@@ -1,0 +1,55 @@
+How to use:
+
+1) create a binary rnn model which you trained before using rnnlm (from Tom Mikolov)
+./rnn_rescore -convert mymodel.txt mymodel.bin
+
+2) compare a few machines which one will be faster
+./rnn_rescore -benchmark mymodel.bin
+
+3) extract a n-best list that looks like this:
+
+
+Recording1_Speaker1_Time1 THIS IS A TEST
+Recording1_Speaker1_Time1 THIS IS TEST
+.
+.
+.
+Recording1_Speaker1_Time2 OF THE MICROFONE
+Recording1_Speaker1_Time2 OFF THE MICROSCOPE
+.
+.
+.
+
+4) compute corresponding RNN-LM score
+./rnn_rescore -nbest mymodel.bin nbest.txt > rnn.scores
+
+the output will look like this
+
+-13.7544
+-12.9833
+.
+.
+.
+
+one score for each line in the nbest.txt!
+
+5) if you have probability scores given from another LM 
+   you can use them together and interpolate on the fly
+
+./rnn_rescore -nbest mymodel.bin nbest.txt -lm-prob lm.probs 0.7,0.4
+
+The format is like 
+0.0234 0.00056 0.009282 0.000013 ...
+.
+.
+.
+for each word (plus <s> symbol) one probability.
+Note: to check whether your files are ok, check the word count of lm.probs and nbest.txt! 
+It has to be exactly the same, also per line!
+
+the output looks then like this:
+-13.7544 -12.3209 -12.876 -11.978
+.
+.
+.
+These are scores for lambda=1 and 0, both for linear interpolation and linear interpolation of word log scores 

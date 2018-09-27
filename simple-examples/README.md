@@ -1,0 +1,4 @@
+
+# Introduction
+
+clone from http://www.fit.vutbr.cz/~imikolov/rnnlm/simple-examples.tgz)

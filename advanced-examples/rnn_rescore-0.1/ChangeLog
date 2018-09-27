@@ -1,0 +1,5 @@
+0.1 - initial release
+
+3 x faster rescoring than "rnnlm" (binary rnn model / floats with Eigen)
+2 x less memory usage than "rnnlm" (floats instead of doubles)
+nbest list rescoring with n-gram probabilities, several interpolation values can be combined in single run
